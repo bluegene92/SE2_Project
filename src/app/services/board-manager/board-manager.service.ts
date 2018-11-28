@@ -103,7 +103,6 @@ export class BoardManagerService implements OnInit {
       this.timer.reset();
       this.board.disable()
     }
-
     console.log(this.statusBar);
   }
 

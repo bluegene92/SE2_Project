@@ -36,6 +36,12 @@ export class AlphabetaService {
       else if (this.isWinner(Player.O)) { return -10; }
       else if (board.isEmpty()) {	return 0; }
 
+
+
+      if (board.width > 3 && board.height > 3)
+        if (depth == 4)
+          return 0
+
       if (player == Player.X) {
         for (let i = 0; i < availableCells.length; i++) {
           let availablePosition = availableCells[i];
@@ -117,7 +123,9 @@ export class AlphabetaService {
             beta = score
             if (depth == this.ROOT)
               this.bestPosition = Number(availablePosition)
-          } else if (beta <= alpha) {
+          }
+          
+          if (beta <= alpha) {
             return beta;
           }
         } // end for

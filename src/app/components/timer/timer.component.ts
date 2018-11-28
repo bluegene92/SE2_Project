@@ -43,8 +43,7 @@ export class TimerComponent implements OnInit {
   }
 
   reset() {
-    if (this.timerIsRunning())
-      this.timerSubscription.unsubscribe();
+    this.timerSubscription.unsubscribe();
     this.timeRemaining = this.thresholdTime;
   }
 
