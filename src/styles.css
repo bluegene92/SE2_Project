@@ -1,1 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
+/**
+  font-family: 'Raleway', sans-serif;
+  font-family: 'Patrick Hand', cursive;
+  font-family: 'Quicksand', sans-serif;
+**/
+
+body {
+  background-color: #E0F1FF;
+}

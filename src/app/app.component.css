@@ -1,0 +1,39 @@
+.title {
+  font-family: 'Patrick Hand', cursive;
+  text-align: center;
+}
+
+.container {
+  margin-top: 4em;
+}
+
+.game-mode-option {
+  margin: 2em;
+}
+
+a {
+  text-decoration: none;
+}
+
+.nav-link {
+  text-align: center;
+  padding: 1em 0;
+}
+
+.nav-link a {
+  background-color: #DB4F37;
+  border-radius: 5px;
+  color: #fff;
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.2em;
+  padding: 1em 6em;
+}
+
+.nav-link a:hover {
+  background-color: #fff;
+  border: 2px solid #F2573C;
+  color: #F2573C;
+  cursor: pointer;
+}
+
+

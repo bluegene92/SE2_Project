@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="board_table">
+        <div class="board"
+                *ngFor="let row of heightArray">
+
+            <app-cell [ngClass]="{'enabled': isEnabled, 'not-allowed': !isEnabled}"
+                    *ngFor="let col of widthArray"
+                    [state]='cells[row*width + col]'
+                    (click)="handleCellSelection(row*width + col)">
+            </app-cell>
+
+        </div>
+    </div>
+</div>

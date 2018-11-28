@@ -1,0 +1,28 @@
+.cell {
+  align-items: center;
+  border: 3px solid #0B476D;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: flex;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 3em;
+  height: 100px;
+  justify-content: center;
+  text-align: center;
+  width: 100px;
+}
+
+.isX {
+  background-color: #FCCBD0;
+  color: #E8514E;
+}
+
+.isO {
+  background-color: #A9E8DC;
+  color: #02547D;
+}
+
+.isX,
+.isO {
+  cursor: not-allowed;
+}
