@@ -1,3 +1,9 @@
+.active {
+  background-color: #DB4F37 !important;
+  border: 2px solid #F2573C !important;
+  color: #fff !important;
+}
+
 .title {
   font-family: 'Patrick Hand', cursive;
   text-align: center;
@@ -21,19 +27,21 @@ a {
 }
 
 .nav-link a {
-  background-color: #DB4F37;
+  background-color: #fff;
+  border: 2px solid #DB4F37;
   border-radius: 5px;
-  color: #fff;
+  color: #DB4F37;
   font-family: 'Raleway', sans-serif;
   font-size: 1.2em;
   padding: 1em 6em;
 }
 
 .nav-link a:hover {
-  background-color: #fff;
+  background-color: #DB4F37;
   border: 2px solid #F2573C;
-  color: #F2573C;
+  color: #fff;
   cursor: pointer;
+  transition: background 0.25s linear;
+	-webkit-transition: background 0.25s linear;
 }
-
 

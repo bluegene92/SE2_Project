@@ -1,4 +1,4 @@
-import { Player } from './../../models/player';
+import { Player } from './../../model/player';
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({

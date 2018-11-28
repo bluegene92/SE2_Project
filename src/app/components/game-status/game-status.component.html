@@ -1,0 +1,46 @@
+<p>
+  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Link with href
+  </a>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Button with data-target
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+  </div>
+</div>
+
+
+<div class="gameStatus">
+  <div class="row">
+      <p class="boardStatus col-sm-6">
+
+          <b>Board Status</b>                         <br />
+          width:          {{width}}                   <br />
+          height          {{height}}                  <br />
+          totalCells:     {{totalCells}}              <br />
+          boardShape:     {{referee.boardShape}}      <br />
+          smallSide:      {{referee.smallSide}}       <br />
+          largeSide:      {{referee.largeSide}}       <br />
+          gameMode:       {{gameMode}}                <br />
+          limitDepth:     {{limitDepth}}              <br />
+          start:          {{board.enableBoard}}
+
+      </p>
+
+      <p class="playerStatus col-sm-6">
+
+          <b>Player Status</b>                        <br />
+          Human:        {{player1}}                 <br />
+          AI:           {{player2}}                 <br />
+          <br />
+
+          User go first:  {{isUserFirstPlayer}}             <br />
+          Player's Turn:  {{currentPlayerTurn}}              <br />
+          Winner:         {{winner}}                  <br />
+
+      </p>
+  </div>
+</div>

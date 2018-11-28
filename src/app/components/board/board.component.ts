@@ -1,7 +1,7 @@
 import { CellComponent } from './../cell/cell.component';
-import { BoardDimension } from './../../models/board';
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Player } from './../../models/player';
+import { BoardDimension } from './../../model/board.state';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Player } from './../../model/player';
 
 @Component({
   selector: 'app-board',

@@ -1,0 +1,116 @@
+<app-board (notifyCellSelectedPosition)='onNotifySelectedCellPosition($event)'></app-board>
+
+
+<div class="menu container">
+  <div class="container status-bar">
+      {{boardManager.statusBar}}
+  </div>
+
+  <div class="row">
+    <div class="form-group col-sm-6">
+
+      <div class="board-size">
+        <h4>Board Size</h4>
+        <div class="input-field">
+          <label for="width">Width:</label>
+          <div [ngClass]="{'valid': isWithinLimit(boardWidth), 'invalid': !isWithinLimit(boardWidth)} ">
+                      <input id="width" type="text" [(ngModel)]="boardWidth" placeholder="{{board.width}}" (input)="onChangeBoardWidth($event.target.value)" />
+          </div>
+
+        </div>
+
+        <div class="input-field">
+          <label for="height">Height:</label>
+          <div [ngClass]="{'valid': isWithinLimit(boardHeight), 'invalid': !isWithinLimit(boardHeight)} ">
+          <input id="height" type="text" [(ngModel)]="boardHeight" placeholder="{{board.height}}" (input)="onChangeBoardHeight($event.target.value)" />
+          </div>
+        </div>
+      </div>
+
+      <app-timer></app-timer>
+
+    </div>
+
+
+    <div class="form-group col-sm-6">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="hva-tab" data-toggle="tab" href="#hva" role="tab" aria-controls="hva"
+            aria-selected="true" (click)="selectedHVA()">Human vs. AI</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="ava-tab" data-toggle="tab" href="#ava" role="tab" aria-controls="ava" aria-selected="false"
+            (click)="selectedAVA()">AI
+            vs. AI</a>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane fade show active" id="hva" role="tabpanel" aria-labelledby="hva-tab">
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="startingPlayerHVA" id="firstPlayer" value="firstPlayer"
+              [(ngModel)]="startingPlayer" checked>
+            <label class="form-check-label" for="firstPlayer">
+              Go first
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="startingPlayerHVA" id="secondPlayer" value="secondPlayer"
+              [(ngModel)]="startingPlayer">
+            <label class="form-check-label" for="secondPlayer">
+              Go second
+            </label>
+          </div>
+
+        </div>
+
+
+        <div class="tab-pane fade" id="ava" role="tabpanel" aria-labelledby="ava-tab">
+          <div class="row ai-vs-ai">
+            <div class="form-group col-sm-6">
+              <label for="ip-address">IP Address:</label>
+              <input type="text" [(ngModel)]="ipAddress" class="form-control col-sm-12" id="ip-address"
+                aria-describedby="ipAddress" placeholder="127.0.1.1">
+              <button class="btn btn-success connect-button col-sm-12" (click)="connect()">Connect</button>
+              <button class="btn btn-info col-sm-12" (click)="sendSetup()">Setup</button>
+              <small id="text" class="form-text text-muted">Connect to external websocket at host {{ipAddress}}</small>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="startingPlayerAVA" id="firstPlayer" value="firstPlayer"
+                      [(ngModel)]="startingPlayer" checked>
+                    <label class="form-check-label" for="firstPlayer">
+                      Go first
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="startingPlayerAVA" id="secondPlayer" value="secondPlayer"
+                      [(ngModel)]="startingPlayer">
+                    <label class="form-check-label" for="secondPlayer">
+                      Go second
+                    </label>
+                  </div>
+            </div>
+          </div>
+
+
+          <div class="">
+            <textarea class="form-control" rows="5" id="comment">{{networkLog}}</textarea>
+            <button class="btn btn-warning clear-button col-sm-12" (click)="clearNetworkLog()">Clear</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <button class="start-game" (click)="startGame()">
+    Start
+  </button>
+  <button class="new-game" (click)="newGame()">
+    New Game
+  </button>
+</div>

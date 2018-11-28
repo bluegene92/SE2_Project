@@ -1,4 +1,4 @@
-import { Player } from './../../../models/player';
+import { Player } from './../../../model/player';
 import { BoardComponent } from './../../../components/board/board.component';
 import { Injectable } from '@angular/core';
 

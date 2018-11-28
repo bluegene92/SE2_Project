@@ -1,0 +1,88 @@
+.menu {
+  font-family: 'Lato', sans-serif;
+}
+
+.menu .input-field label {
+  width: 100px;
+}
+
+.menu .input-field input[type="text"] {
+  text-align: center;
+  width: 40px;
+  display: inline-block;
+}
+
+.menu .board-size {
+  margin-bottom: 2em;
+}
+
+.status-bar {
+  padding-top: 4px;
+  background-color: #285A7D;
+  height: 2em;
+  color: white;
+  font-size: 2em;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+
+.new-game,
+.start-game {
+  color: #fff;
+  border: 0px;
+  font-family: 'Dosis', Helvetica, sans-serif;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin: 0px;
+  padding: 15px;
+  width: 100%;
+}
+
+.new-game {
+  background-color: #112F41;
+}
+
+.start-game {
+  background-color: #448F3B;
+}
+
+.new-game:hover,
+.start-game:hover {
+  cursor: pointer;
+}
+
+.new-game:hover {
+  background-color: #236287;
+}
+
+.start-game:hover {
+  background-color: #59BD4D;
+}
+
+.connect-button {
+  margin: 1em 0;
+  display: inline-block;
+}
+
+.clear-button {
+  margin: 1em 0;
+}
+
+.ai-vs-ai {
+  margin-top: 1em;
+}
+
+.valid,
+.invalid {
+  display: inline;
+}
+
+
+.valid input[type="text"] {
+  border: 2px solid green;
+}
+
+.invalid input[type="text"] {
+  border: 2px solid red;
+}

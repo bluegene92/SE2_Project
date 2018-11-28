@@ -1,0 +1,20 @@
+<div class="timer form-group">
+    <h4>Timer</h4>
+    <div class="input-field">
+      <label for="thresholdTime">Threshold</label>
+      <input  type="text"
+              [(ngModel)]="thresholdTime"
+              maxlength="2" size="1"
+              placeholder="{{thresholdTime}}"
+              (input)="onThresholdTimeChange($event.target.value)"/>
+    </div>
+
+    <div class="input-field">
+      <label>Time:</label>
+      <span class="time-count-down">{{timeRemaining}} secs</span>
+    </div>
+
+    <!-- <button (click)="start()">Start</button>
+    <button (click)="stop()">Stop</button>
+    <button (click)="reset()">Reset</button> -->
+</div>
