@@ -94,13 +94,29 @@ export class MenuComponent implements OnInit {
   }
 
   private connect() {
-    this.networkLog += `[Connect]: ${this.ipAddress}\n`;
-    this.socketService.connectToExternalServer(this.ipAddress)
+    // this.socketService.onMessage()
+    //   .subscribe((msg) => {
+    //       console.log(`${msg}`)
+    //   })
+
+    this.socketService.onSetup()
+      .subscribe((setupStatus) => {
+        console.log(`${JSON.stringify(setupStatus)}`)
+      })
+
+    this.socketService.onClaim()
+      .subscribe((claimData) => {
+        this.networkLog += `${JSON.stringify(claimData)}\n`
+        console.log(`claim return: ${JSON.stringify(claimData)}`)
+      })
   }
 
-  private sendSetup() {
-    console.log('send setup');
+  sendSetup() {
     this.socketService.sendSetup(this.boardWidth, this.boardHeight, this.startingPlayer)
+  }
+
+  sendClaim() {
+    this.socketService.sendClaim(6,6);
   }
 
   private isWithinLimit(length: number) {

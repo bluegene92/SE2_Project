@@ -38,16 +38,14 @@ export class AlphabetaService {
 
 
       if (board.width == board.height) {
-        if (board.width > 8) 
+        if (board.width >= 8)
           if (depth == 3)
             return 0
-              
+
         if (board.width > 3)
           if (depth == 6)
             return 0
       }
-
-
 
       if (board.width > 6 || board.height > 6)
         if (depth == 4)
@@ -61,10 +59,10 @@ export class AlphabetaService {
         if (depth == 6)
           return 0
 
-      
 
-      
-  
+
+
+
 
       if (player == Player.X) {
         for (let i = 0; i < availableCells.length; i++) {
@@ -137,7 +135,7 @@ export class AlphabetaService {
             if (depth == this.ROOT)
               this.bestPosition = Number(availablePosition)
           }
-          
+
           if (beta <= alpha) {
             return beta;
           }
@@ -161,9 +159,9 @@ export class AlphabetaService {
         let playerCount = 0;
         if (!win) {
           for (let i = 0; i < winSet.length; i++) {
-            if (winSet[i] == player) 
+            if (winSet[i] == player)
               playerCount++
-            if (playerCount == winSet.length) 
+            if (playerCount == winSet.length)
               win = true
           }
         } else {

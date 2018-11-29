@@ -55,7 +55,7 @@ export class TimerComponent implements OnInit {
     this.timeRemaining = this.thresholdTime - this.counter;
     if (this.isOutOfTime()) {
       this.reset();
-      this.boardManager.identifyWinner()
+      // this.boardManager.identifyWinner()
     }
   }
 

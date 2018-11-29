@@ -17,7 +17,7 @@ import { HumanVsAi } from '../game-mode/human-vs-ai/human-vs-ai.imp';
 export class BoardManagerService implements OnInit {
 
   private board: BoardComponent;
-  private statusBar: string = '';
+  statusBar: string = '';
   private winner: string = '';
   private gameMode: GameModeInterface;
   private startingPlayer: string = '';
@@ -65,7 +65,7 @@ export class BoardManagerService implements OnInit {
   userSelectPosition(position: number) {
     this.board.selectCell(position, Player.X);
     this.selectCellAndUpdateWinningConditions(position, Player.X);
-    this.timer.reset();
+    // this.timer.reset();
     this.playerGoAfter(Player.X);
     this.aiMakeMove();
   }
@@ -77,8 +77,8 @@ export class BoardManagerService implements OnInit {
         .runAlgorithm(this.board, Player.O, this.referee.getAllWinningConditions());
       this.selectCellAndUpdateWinningConditions(bestMovePosition, Player.O)
       this.playerGoAfter(Player.O);
-      this.timer.reset();
-      this.timer.start();
+      // this.timer.reset();
+      // this.timer.start();
     }, 0);
   }
 
@@ -90,24 +90,17 @@ export class BoardManagerService implements OnInit {
 		if (this.referee.isWinner(player)) {
 			this.winner = player;
       this.statusBar = `${this.winner} Win!!!`;
-      this.timer.reset();
+      // this.timer.reset();
       this.board.disable()
 		}
 
 		if (this.referee.isDraw()) {
 			this.winner = Result.DRAW;
       this.statusBar = `${Result.DRAW}`;
-      this.timer.reset();
+      // this.timer.reset();
       this.board.disable()
     }
     console.log(this.statusBar);
-  }
-
-  identifyWinner() {
-    if (this.currentPlayerTurn == Player.X)
-      this.statusBar = `Out of Time: O Win!!!`
-    else
-      this.statusBar = `Out of Time: X win!!!`
   }
 
   resetGame() {
