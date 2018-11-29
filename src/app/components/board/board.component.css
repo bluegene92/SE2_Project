@@ -1,12 +1,10 @@
-/*font-family: 'Lato', sans-serif;
-font-family: 'Patrick Hand', cursive;*/
-
 .board_table {
-  padding: 64px 16px;
   background-color: #398689;
+  padding: 64px 16px;
 }
 
 .board {
+  align-items: center;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -19,7 +17,6 @@ font-family: 'Patrick Hand', cursive;*/
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
@@ -33,6 +30,7 @@ font-family: 'Patrick Hand', cursive;*/
 .enabled:hover {
   background-color: #FFCB05;
   color: #F23C50;
+  transition: background 0.8s ease-out;
 }
 
 .not-allowed {

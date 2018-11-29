@@ -49,7 +49,7 @@ export class BoardComponent implements OnInit {
 			for (let j = 0; j < this.width; j++) {
         this.widthArray[j] = j;
 				let v = this.markCellPositionValue(j, i);
-				// this.cellsCoordinates[v] = `${i},${j}`;
+				this.cellsCoordinates[v] = `${i},${j}`;
         this.cells[v] = v.toString();
 			}
 		}
@@ -59,7 +59,7 @@ export class BoardComponent implements OnInit {
 		return (yCoord * this.width) + xCoord;
   }
 
-  private handleCellSelection(position: number) {
+  handleCellSelection(position: number) {
     if (this.isEnabled && !this.isCellTaken(position)) {
       this.notifyCellSelectedPosition.emit(position);
     }
@@ -114,5 +114,4 @@ export class BoardComponent implements OnInit {
   undoCell(position: number, value: string) {
 		this.cells[position] = value;
 	}
-
 }

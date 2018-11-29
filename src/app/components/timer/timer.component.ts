@@ -8,7 +8,6 @@ import { timer } from 'rxjs/observable/timer';
 import { interval } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',

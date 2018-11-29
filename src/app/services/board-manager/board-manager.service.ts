@@ -47,10 +47,6 @@ export class BoardManagerService implements OnInit {
     this.timer.start();
   }
 
-  resetTimer() {
-    this.timer.reset();
-  }
-
   generateWinningConditions() {
     this.referee.generateWinningConditionList(this.board.width, this.board.height);
   }
@@ -82,6 +78,7 @@ export class BoardManagerService implements OnInit {
       this.selectCellAndUpdateWinningConditions(bestMovePosition, Player.O)
       this.playerGoAfter(Player.O);
       this.timer.reset();
+      this.timer.start();
     }, 0);
   }
 
@@ -114,7 +111,7 @@ export class BoardManagerService implements OnInit {
   }
 
   resetGame() {
-    this.resetTimer();
+    this.timer.reset();
     this.statusBar = '';
   }
 
@@ -122,5 +119,4 @@ export class BoardManagerService implements OnInit {
     this.currentPlayerTurn = (player == Player.X) ? Player.O : Player.X;
     console.log(this.currentPlayerTurn);
   }
-
 }

@@ -6,7 +6,7 @@ import { Message } from './../../model/message.model';
 import * as sockIo from 'socket.io-client';
 import { MenuComponent } from '../../components/menu/menu.component';
 
-const SERVER_URL = 'http://localhost:5000'
+const SERVER_URL = 'http://localhost:5123'
   // const SERVER_URL = 'https://enigmatic-journey-54106.herokuapp.com/'
 
 
@@ -74,19 +74,37 @@ export class WebsocketService implements OnInit {
   }
 
   sendSetup(width: number, height: number, startingPlayer: string) {
-    var player = (startingPlayer == Player.FIRST) ? 1 : 2
-    this.socketToExternalServer.emit('request', JSON.stringify({
-      action: 'setup',
-      board: {
-        colcount: width,
-        rowcount: height
-      },
-      firstplayer: player
-    }));
+    // var player = (startingPlayer == Player.FIRST) ? 1 : 2
+    // this.socketToExternalServer.emit(JSON.stringify({
+    //   action: 'data',
+    //   board: {
+    //     colcount: width,
+    //     rowcount: height
+    //   },
+    //   firstplayer: player
+    // }));
+
+   
+    var a = {
+      action: "1"
+    }
+    console.log('sending....' + JSON.stringify(a))
+    this.socketToExternalServer.write(JSON.stringify(a))
+    this.socketToExternalServer.send(
+     "GET / HTTP/1.1\r\nHost: example.com\r\n\r\nAccept: *\r\nzustimmung"
+    );
+
+    // this.socketToExternalServer.sendString(`{"action": "1"}`)
   }
 
   connectToExternalServer(ipAddress: string) {
     console.log(`connect to ${ipAddress}`)
+
+    var headers = {
+      extraHeaders: {
+
+      }
+    }
     this.socketToExternalServer = sockIo(ipAddress)
     this.sendInitializationRequest()
     this.initializeAllSubscription();

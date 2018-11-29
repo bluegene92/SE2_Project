@@ -1,15 +1,15 @@
 .cell {
-  width: 100px;
-  height: 100px;
+  align-items: center;
   box-sizing: border-box;
   border: 3px solid #0B476D;
   border-radius: 10px;
-  font-size: 3em;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
   font-family: 'Patrick Hand', cursive;
+  font-size: 3em;
+  height: 100px;
+  justify-content: center;
+  text-align: center;
+  width: 100px;
 }
 
 .isX {

@@ -37,10 +37,34 @@ export class AlphabetaService {
       else if (board.isEmpty()) {	return 0; }
 
 
+      if (board.width == board.height) {
+        if (board.width > 8) 
+          if (depth == 3)
+            return 0
+              
+        if (board.width > 3)
+          if (depth == 6)
+            return 0
+      }
 
-      if (board.width > 3 && board.height > 3)
+
+
+      if (board.width > 6 || board.height > 6)
         if (depth == 4)
           return 0
+
+      if (board.width > 5 || board.height > 5)
+        if (depth == 5)
+          return 0
+
+      if (board.width > 4 || board.height > 4)
+        if (depth == 6)
+          return 0
+
+      
+
+      
+  
 
       if (player == Player.X) {
         for (let i = 0; i < availableCells.length; i++) {
@@ -54,24 +78,18 @@ export class AlphabetaService {
             let winSet = this.allWinningConditions[i]
             for (let j = 0; j < winSet.length; j++) {
               if (winSet[j] == Number(availablePosition)) {
-                winSet[j] = Player.X
-                let coord = [i, j]
-                undoList.push(coord)
+                winSet[j] = Player.X;
+                let coord = [i, j];
+                undoList.push(coord);
               }
             }
           }
 
-          let score: any = this.alphaBetaPruning(board, Player.O, depth + 1, alpha, beta)
+          let score: any = this.alphaBetaPruning(board, Player.O, depth + 1, alpha, beta);
 
           board.undoCell(Number(availablePosition), availablePosition);
 
-          for (let i = 0; i < undoList.length; i++) {
-            let u = undoList[i]
-            let yC = u[0]
-            let xC = u[1]
-            this.allWinningConditions[yC][xC] = availablePosition
-          }
-
+          this.undoWinningConditions(undoList, availablePosition);
 
           if (score > alpha) {
             alpha = score
@@ -112,12 +130,7 @@ export class AlphabetaService {
 
           board.undoCell(Number(availablePosition), availablePosition)
 
-          for (let i = 0; i < undoList.length; i++) {
-            let u = undoList[i]
-            let yC = u[0]
-            let xC = u[1]
-            this.allWinningConditions[yC][xC] = availablePosition
-          }
+          this.undoWinningConditions(undoList, availablePosition)
 
           if (score < beta) {
             beta = score
@@ -133,14 +146,25 @@ export class AlphabetaService {
       }
     }
 
+    private undoWinningConditions(undoList: number[][], availablePosition: string) {
+      for (let i = 0; i < undoList.length; i++) {
+        let u = undoList[i]
+        let yC = u[0]
+        let xC = u[1]
+        this.allWinningConditions[yC][xC] = availablePosition
+      }
+    }
+
     isWinner(player: string): boolean {
       let win = false
       for (let winSet of this.allWinningConditions) {
         let playerCount = 0;
         if (!win) {
           for (let i = 0; i < winSet.length; i++) {
-            if (winSet[i] == player) playerCount++
-            if (playerCount == winSet.length) win = true
+            if (winSet[i] == player) 
+              playerCount++
+            if (playerCount == winSet.length) 
+              win = true
           }
         } else {
           break;
