@@ -41,6 +41,7 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.initializeDefaultGameMenu();
     this.socketService.menuRef(this);
+    this.initializeSocketSubscription()
   }
 
   private initializeDefaultGameMenu() {
@@ -93,22 +94,44 @@ export class MenuComponent implements OnInit {
     this.startingPlayer = Player.SECOND;
   }
 
+  private initializeSocketSubscription() {
+    this.socketService.onInitialization()
+    .subscribe((initData) => {
+      console.log(`[init return]: ${JSON.stringify(initData)}`)
+      var data = initData["data"];
+      var status = initData["status"];
+
+      if (status == "ok")
+        this.networkLog += `[init]: connect to server successfully.\n`
+      else
+        this.networkLog += `[init]: unable to connect server.\n`
+    })
+
+  this.socketService.onSetup()
+    .subscribe((setupData) => {
+      console.log(`[setup return]: ${JSON.stringify(setupData)}`)
+      var data = setupData["data"];
+      var status = setupData["status"];
+      if (status == "ok")
+        this.networkLog += `[setup]: setup sent successfully.\n`
+      else
+        this.networkLog += `[setup]: setup fail.\n`
+    })
+
+  this.socketService.onClaim()
+    .subscribe((claimData) => {
+      console.log(`[claim return]: ${JSON.stringify(claimData)}`)
+      var data = claimData["data"];
+      var status = claimData["status"];
+      if (status == "ok")
+        this.networkLog += `[claim]: claim sent successfully.\n`
+      else
+        this.networkLog += `[claim]: claim sent fail.\n`
+    })
+  }
+
   private connect() {
-    // this.socketService.onMessage()
-    //   .subscribe((msg) => {
-    //       console.log(`${msg}`)
-    //   })
-
-    this.socketService.onSetup()
-      .subscribe((setupStatus) => {
-        console.log(`${JSON.stringify(setupStatus)}`)
-      })
-
-    this.socketService.onClaim()
-      .subscribe((claimData) => {
-        this.networkLog += `${JSON.stringify(claimData)}\n`
-        console.log(`claim return: ${JSON.stringify(claimData)}`)
-      })
+    this.socketService.sendInitialization()
   }
 
   sendSetup() {

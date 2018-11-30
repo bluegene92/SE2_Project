@@ -14,7 +14,6 @@ const INTERNAL_SERVER_URL = 'http://localhost:5000'
 
 @Injectable()
 export class WebsocketService implements OnInit {
-  // private socketToExternalServer
   private socketToInternalServer = io(INTERNAL_SERVER_URL)
   private menu: MenuComponent
   constructor() { }
@@ -31,6 +30,15 @@ export class WebsocketService implements OnInit {
         this.socketToInternalServer.on('message',
           (data: string) => observer.next(data))
       });
+  }
+
+  onInitialization(): Observable<string> {
+    return new Observable<string>(
+      observer => {
+        this.socketToInternalServer.on('init_return',
+          (data: string) => observer.next(data))
+      }
+    )
   }
 
   onSetup(): Observable<string> {
@@ -59,13 +67,11 @@ export class WebsocketService implements OnInit {
     )
   }
 
-  sendClaim(row: number, col: number) {
-    var claimData = {
-      action: "claim",
-      row: row,
-      col: col
+  sendInitialization() {
+    var initData = {
+      action: "init"
     }
-    this.socketToInternalServer.send(claimData)
+    this.socketToInternalServer.send(initData);
   }
 
   sendSetup(width: number, height: number, startingPlayer: string) {
@@ -78,7 +84,17 @@ export class WebsocketService implements OnInit {
       },
       firstplayer: player
     }
-    this.socketToInternalServer.send(setupData)
+    this.socketToInternalServer.emit('setup', setupData);
   }
+
+  sendClaim(row: number, col: number) {
+    var claimData = {
+      action: "claim",
+      row: row,
+      col: col
+    }
+    this.socketToInternalServer.emit('claim', claimData);
+  }
+
 
 }
