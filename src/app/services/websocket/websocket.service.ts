@@ -6,7 +6,8 @@ import { Message } from './../../model/message.model';
 import * as sockIo from 'socket.io-client';
 import { MenuComponent } from '../../components/menu/menu.component';
 
-const SERVER_URL = 'http://localhost:5123'
+
+const SERVER_URL = 'http://localhost:5000'
   // const SERVER_URL = 'https://enigmatic-journey-54106.herokuapp.com/'
 
 
@@ -15,6 +16,7 @@ export class WebsocketService implements OnInit {
   // socketToInternalServer = sockIo("")
   private socketToExternalServer
   private menu: MenuComponent
+
   constructor() { }
 
   ngOnInit(): void {
