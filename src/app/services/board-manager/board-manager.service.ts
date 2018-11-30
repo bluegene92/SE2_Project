@@ -9,7 +9,9 @@ import { RefereeService } from './../referee/referee.service';
 import { Injectable, OnInit } from '@angular/core';
 import { BoardComponent } from '../../components/board/board.component';
 import { HumanVsAi } from '../game-mode/human-vs-ai/human-vs-ai.imp';
-
+import { WebsocketService } from './../../services/websocket/websocket.service';
+import { MenuComponent } from 'src/app/components/menu/menu.component';
+import { GameMode } from 'src/app/model/game-mode';
 
 @Injectable({
   providedIn: 'root'
@@ -17,20 +19,20 @@ import { HumanVsAi } from '../game-mode/human-vs-ai/human-vs-ai.imp';
 export class BoardManagerService implements OnInit {
 
   private board: BoardComponent;
-  private statusBar: string = '';
+  private menu: MenuComponent;
+  statusBar: string = '';
   private winner: string = '';
-  private gameMode: GameModeInterface;
+  private gameMode: string = '';
   private startingPlayer: string = '';
   private currentPlayerTurn: string = Player.X;
   private timer: TimerComponent;
   private timeSubscription: Subscription
 
   constructor(private referee: RefereeService,
-    private alphabeta: AlphabetaService) {}
+    private alphabeta: AlphabetaService, 
+    private socketService: WebsocketService) {}
 
-  ngOnInit() {
-    this.gameMode = new HumanVsAi();
-  }
+  ngOnInit() {}
 
   manage(board: BoardComponent) {
      this.board = board;
@@ -43,6 +45,10 @@ export class BoardManagerService implements OnInit {
     this.timer.referenceBoardManager(this);
   }
 
+  referenceMenu(menu: MenuComponent) {
+    this.menu = menu;
+  }
+
   startTimer() {
     this.timer.start();
   }
@@ -51,34 +57,54 @@ export class BoardManagerService implements OnInit {
     this.referee.generateWinningConditionList(this.board.width, this.board.height);
   }
 
-  setGameMode(gameMode: GameModeInterface, startingPlayer: string) {
+  setGameMode(gameMode: string, startingPlayer: string) {
     this.gameMode = gameMode;
     this.startingPlayer = startingPlayer;
+    console.log(`[BoardManager]: gameMode: ${gameMode}, startingPlayer: ${startingPlayer}`)
   }
 
   startWithPlayer(startingPlayer: string) {
-    if (startingPlayer == Player.SECOND) {
-      this.aiMakeMove();
+    
+    if (this.gameMode == GameMode.HUMAN_VS_AI) {
+      if (startingPlayer == Player.SECOND)
+        this.aiMakeMove();
+    }
+
+    if (this.gameMode == GameMode.AI_VS_AI) {
+      if (startingPlayer == Player.FIRST) {
+        let bestMovePosition = this.alphabeta
+          .runAlgorithm(this.board, Player.O, this.referee.getAllWinningConditions());
+        this.selectCellAndUpdateWinningConditions(bestMovePosition, Player.O)
+        var coordArr = this.board.cellsCoordinates[bestMovePosition].split(',')
+        let row = coordArr[0];
+        let col = coordArr[1];
+        console.log(`row: ${row}, col: ${col}`)
+        this.socketService.sendClaim(row, col);
+      }
     }
   }
 
   userSelectPosition(position: number) {
-    this.board.selectCell(position, Player.X);
-    this.selectCellAndUpdateWinningConditions(position, Player.X);
-    this.timer.reset();
-    this.playerGoAfter(Player.X);
-    this.aiMakeMove();
+    if (this.gameMode == GameMode.HUMAN_VS_AI) {
+      this.board.selectCell(position, Player.X);
+      this.selectCellAndUpdateWinningConditions(position, Player.X);
+      this.aiMakeMove();
+    }
   }
 
-	aiMakeMove() {
-    this.timer.start();
+  opponentSelectPosition(position: number) {
+    if (this.gameMode == GameMode.AI_VS_AI) {
+      this.board.selectCell(position, Player.X);
+      this.selectCellAndUpdateWinningConditions(position, Player.X);
+      // this.aiMakeMove();
+    }
+  }
+
+	aiMakeMove(): any {
     setTimeout(()=> {
       let bestMovePosition = this.alphabeta
         .runAlgorithm(this.board, Player.O, this.referee.getAllWinningConditions());
       this.selectCellAndUpdateWinningConditions(bestMovePosition, Player.O)
-      this.playerGoAfter(Player.O);
-      this.timer.reset();
-      this.timer.start();
     }, 0);
   }
 
@@ -90,28 +116,19 @@ export class BoardManagerService implements OnInit {
 		if (this.referee.isWinner(player)) {
 			this.winner = player;
       this.statusBar = `${this.winner} Win!!!`;
-      this.timer.reset();
       this.board.disable()
 		}
 
 		if (this.referee.isDraw()) {
 			this.winner = Result.DRAW;
       this.statusBar = `${Result.DRAW}`;
-      this.timer.reset();
       this.board.disable()
     }
     console.log(this.statusBar);
   }
 
-  identifyWinner() {
-    if (this.currentPlayerTurn == Player.X)
-      this.statusBar = `Out of Time: O Win!!!`
-    else
-      this.statusBar = `Out of Time: X win!!!`
-  }
-
   resetGame() {
-    this.timer.reset();
+    // this.timer.reset();
     this.statusBar = '';
   }
 

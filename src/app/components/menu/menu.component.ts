@@ -29,7 +29,7 @@ export class MenuComponent implements OnInit {
 
   private ipAddress: string = 'localhost:5000';
   networkLog: string = '';
-  private gameModeSelected = GameMode.HUMAN_VS_AI;
+  gameModeSelected = GameMode.HUMAN_VS_AI;
   private startingPlayer: string = Player.FIRST;
 
   constructor(private boardManager: BoardManagerService,
@@ -41,11 +41,13 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.initializeDefaultGameMenu();
     this.socketService.menuRef(this);
+    this.initializeSocketSubscription()
   }
 
   private initializeDefaultGameMenu() {
     this.boardManager.manage(this.board);
     this.boardManager.referenceTimer(this.timer);
+    this.boardManager.referenceMenu(this);
     this.boardAccessHandler.manage(this.board);
     this.boardConfigurator.manage(this.board);
   }
@@ -66,8 +68,9 @@ export class MenuComponent implements OnInit {
 
   private startGame() {
     this.boardAccessHandler.enable();
+    this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
     this.boardManager.startWithPlayer(this.startingPlayer);
-    this.boardManager.startTimer();
+    // this.boardManager.startTimer();
   }
 
   private newGame() {
@@ -75,14 +78,17 @@ export class MenuComponent implements OnInit {
     this.boardManager.resetGame();
     this.boardAccessHandler.reset();
     this.boardAccessHandler.disable();
+    this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
   }
 
   private selectedHVA() {
-    this.boardManager.setGameMode(new HumanVsAi(), this.startingPlayer);
+    this.gameModeSelected = GameMode.HUMAN_VS_AI;
+    console.log(this.gameModeSelected);
   }
 
   private selectedAVA() {
-    this.boardManager.setGameMode(new AiVsAi(), this.startingPlayer);
+    this.gameModeSelected = GameMode.AI_VS_AI;
+    console.log(this.gameModeSelected)
   }
 
   private goFirst() {
@@ -93,14 +99,66 @@ export class MenuComponent implements OnInit {
     this.startingPlayer = Player.SECOND;
   }
 
-  private connect() {
-    this.networkLog += `[Connect]: ${this.ipAddress}\n`;
-    this.socketService.connectToExternalServer(this.ipAddress)
+  private initializeSocketSubscription() {
+    this.socketService.onInitialization()
+    .subscribe((initData) => {
+      console.log(`[init return]: ${JSON.stringify(initData)}`)
+      var data = initData["data"];
+      var status = initData["status"];
+
+      if (status == "ok")
+        this.networkLog += `[init]: connect to server successfully.\n`
+      else
+        this.networkLog += `[init]: unable to connect server.\n`
+    })
+
+  this.socketService.onSetup()
+    .subscribe((setupData) => {
+      console.log(`[setup return]: ${JSON.stringify(setupData)}`)
+      var data = setupData["data"];
+      var status = setupData["status"];
+      if (status == "ok")
+        this.networkLog += `[setup]: setup sent successfully.\n`
+      else
+        this.networkLog += `[setup]: setup fail.\n`
+    })
+
+  this.socketService.onClaim()
+    .subscribe((claimData) => {
+      console.log(`[claim return]: ${JSON.stringify(claimData)}`)
+      var data = claimData["data"];
+      var status = claimData["status"];
+      var row = data["row"];
+      var col = data["col"];
+
+      var opponentPosition = (row * this.boardWidth) + col;
+      // this.boardManager.opponentSelectPosition(opponentPosition)
+
+      if (status == "ok")
+        this.networkLog += `[claim]: claim sent successfully.\n`
+      else
+        this.networkLog += `[claim]: claim sent fail.\n`
+    })
+
+  this.socketService.onClaimPosition()
+      .subscribe((claimPositionData) => {
+        console.log(`[claim position return]: ${JSON.stringify(claimPositionData)}`)
+
+
+      })
   }
 
-  private sendSetup() {
-    console.log('send setup');
+
+  private connect() {
+    this.socketService.sendInitialization()
+  }
+
+  sendSetup() {
     this.socketService.sendSetup(this.boardWidth, this.boardHeight, this.startingPlayer)
+  }
+
+  sendClaim() {
+    this.socketService.sendClaim(2,2);
   }
 
   private isWithinLimit(length: number) {
