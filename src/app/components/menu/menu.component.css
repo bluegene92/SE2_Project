@@ -86,3 +86,9 @@
 .invalid input[type="text"] {
   border: 2px solid red;
 }
+
+.not-allowed,
+.not-allowed:hover {
+  cursor: not-allowed !important;
+  background-color: gray;
+}

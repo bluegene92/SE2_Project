@@ -30,7 +30,7 @@
 .enabled:hover {
   background-color: #FFCB05;
   color: #F23C50;
-  transition: background 0.8s ease-out;
+  transition: background 0.4s linear;
 }
 
 .not-allowed {

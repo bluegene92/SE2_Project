@@ -30,6 +30,7 @@ export class MenuComponent implements OnInit {
   private ipAddress: string = 'localhost:5000';
   networkLog: string = '';
   gameModeSelected = GameMode.HUMAN_VS_AI;
+  isGameStarted = false;
   private startingPlayer: string = Player.FIRST;
 
   constructor(private boardManager: BoardManagerService,
@@ -48,6 +49,7 @@ export class MenuComponent implements OnInit {
     this.boardManager.manage(this.board);
     this.boardManager.referenceTimer(this.timer);
     this.boardManager.referenceMenu(this);
+    this.boardManager.referenceSocket(this.socketService);
     this.boardAccessHandler.manage(this.board);
     this.boardConfigurator.manage(this.board);
   }
@@ -67,28 +69,33 @@ export class MenuComponent implements OnInit {
   }
 
   private startGame() {
-    this.boardAccessHandler.enable();
-    this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
-    this.boardManager.startWithPlayer(this.startingPlayer);
-    // this.boardManager.startTimer();
+    if (!this.isGameStarted) {
+      this.isGameStarted = true;
+      this.boardAccessHandler.enable();
+      this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
+      this.boardManager.startWithPlayer(this.startingPlayer);
+    }
   }
 
   private newGame() {
-    this.boardManager.generateWinningConditions();
-    this.boardManager.resetGame();
-    this.boardAccessHandler.reset();
-    this.boardAccessHandler.disable();
-    this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
+    if (this.isGameStarted) {
+      this.isGameStarted = false;
+      this.boardManager.generateWinningConditions();
+      this.boardManager.resetGame();
+      this.boardAccessHandler.reset();
+      this.boardAccessHandler.disable();
+      this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
+    }
   }
 
   private selectedHVA() {
+    this.newGame();
     this.gameModeSelected = GameMode.HUMAN_VS_AI;
-    console.log(this.gameModeSelected);
   }
 
   private selectedAVA() {
+    this.newGame();
     this.gameModeSelected = GameMode.AI_VS_AI;
-    console.log(this.gameModeSelected)
   }
 
   private goFirst() {
@@ -105,7 +112,6 @@ export class MenuComponent implements OnInit {
       console.log(`[init return]: ${JSON.stringify(initData)}`)
       var data = initData["data"];
       var status = initData["status"];
-
       if (status == "ok")
         this.networkLog += `[init]: connect to server successfully.\n`
       else
@@ -117,8 +123,24 @@ export class MenuComponent implements OnInit {
       console.log(`[setup return]: ${JSON.stringify(setupData)}`)
       var data = setupData["data"];
       var status = setupData["status"];
-      if (status == "ok")
-        this.networkLog += `[setup]: setup sent successfully.\n`
+      var board = data["board"];
+      var firstPlayer = data["firstplayer"];
+      console.log(firstPlayer);
+      if (status == "ok") {
+        this.networkLog += `[setup]: setup sent successfully.`;
+        this.networkLog += ` row = ${board.rowcount} `;
+        this.networkLog += ` col = ${board.colcount}\n`;
+        if (firstPlayer == 1) {
+          this.networkLog += `[go first]: Opponent\n`;
+          this.startGame();
+        }
+
+        if (firstPlayer == 2) {
+          this.networkLog += `[go first]: Us\n`;
+          this.startGame();
+          this.boardManager.aiMakeMove();
+        }
+      }
       else
         this.networkLog += `[setup]: setup fail.\n`
     })
@@ -131,20 +153,30 @@ export class MenuComponent implements OnInit {
       var row = data["row"];
       var col = data["col"];
 
-      var opponentPosition = (row * this.boardWidth) + col;
-      // this.boardManager.opponentSelectPosition(opponentPosition)
-
-      if (status == "ok")
-        this.networkLog += `[claim]: claim sent successfully.\n`
-      else
-        this.networkLog += `[claim]: claim sent fail.\n`
+      if (status == "ok") {
+        this.networkLog += `[claim]: Sent successfully.`
+        this.networkLog += ` Selected row = ${row}, col = ${col}\n`;
+      }
+      else {
+        this.networkLog += `[claim]: Sent fail.\n`
+      }
     })
 
   this.socketService.onClaimPosition()
       .subscribe((claimPositionData) => {
         console.log(`[claim position return]: ${JSON.stringify(claimPositionData)}`)
+        var row = claimPositionData["row"];
+        var col = claimPositionData["col"];
+        this.networkLog += `[Opponent claim]: row = ${row}, col = ${col}\n`;
 
-
+        if (row < 0 || col < 0 || row > this.boardHeight-1 || col > this.boardWidth-1) {
+          this.networkLog += `[Error]: Invalid board position\n`
+          this.boardManager.statusBar = `Invalid position at row = ${row}, col = ${col}. Try again`;
+          // this.boardAccessHandler.disable();
+        } else {
+          this.boardManager.statusBar = ``;
+          this.boardManager.opponentSelectPosition(row, col);
+        }
       })
   }
 

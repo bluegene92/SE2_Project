@@ -1,3 +1,4 @@
+import { WebsocketService } from './../websocket/websocket.service';
 import { Subscription } from 'rxjs/Subscription';
 import { TimerComponent } from './../../components/timer/timer.component';
 import { GameModeInterface } from './../game-mode/game-mode.interface';
@@ -9,7 +10,6 @@ import { RefereeService } from './../referee/referee.service';
 import { Injectable, OnInit } from '@angular/core';
 import { BoardComponent } from '../../components/board/board.component';
 import { HumanVsAi } from '../game-mode/human-vs-ai/human-vs-ai.imp';
-import { WebsocketService } from './../../services/websocket/websocket.service';
 import { MenuComponent } from 'src/app/components/menu/menu.component';
 import { GameMode } from 'src/app/model/game-mode';
 
@@ -19,6 +19,7 @@ import { GameMode } from 'src/app/model/game-mode';
 export class BoardManagerService implements OnInit {
 
   private board: BoardComponent;
+  private socketService: WebsocketService;
   private menu: MenuComponent;
   statusBar: string = '';
   private winner: string = '';
@@ -29,8 +30,7 @@ export class BoardManagerService implements OnInit {
   private timeSubscription: Subscription
 
   constructor(private referee: RefereeService,
-    private alphabeta: AlphabetaService, 
-    private socketService: WebsocketService) {}
+    private alphabeta: AlphabetaService) {}
 
   ngOnInit() {}
 
@@ -49,6 +49,10 @@ export class BoardManagerService implements OnInit {
     this.menu = menu;
   }
 
+  referenceSocket(socket: WebsocketService) {
+    this.socketService = socket;
+  }
+
   startTimer() {
     this.timer.start();
   }
@@ -64,23 +68,17 @@ export class BoardManagerService implements OnInit {
   }
 
   startWithPlayer(startingPlayer: string) {
-    
     if (this.gameMode == GameMode.HUMAN_VS_AI) {
       if (startingPlayer == Player.SECOND)
         this.aiMakeMove();
     }
+  }
 
+  avaStartWithPlayer(startingPlayer: string) {
     if (this.gameMode == GameMode.AI_VS_AI) {
-      if (startingPlayer == Player.FIRST) {
-        let bestMovePosition = this.alphabeta
-          .runAlgorithm(this.board, Player.O, this.referee.getAllWinningConditions());
-        this.selectCellAndUpdateWinningConditions(bestMovePosition, Player.O)
-        var coordArr = this.board.cellsCoordinates[bestMovePosition].split(',')
-        let row = coordArr[0];
-        let col = coordArr[1];
-        console.log(`row: ${row}, col: ${col}`)
-        this.socketService.sendClaim(row, col);
-      }
+      if (startingPlayer == Player.SECOND)
+        console.log(`ai vs ai, we go first`);
+        this.aiMakeMove();
     }
   }
 
@@ -92,11 +90,17 @@ export class BoardManagerService implements OnInit {
     }
   }
 
-  opponentSelectPosition(position: number) {
+  opponentSelectPosition(row: number, col: number) {
     if (this.gameMode == GameMode.AI_VS_AI) {
-      this.board.selectCell(position, Player.X);
-      this.selectCellAndUpdateWinningConditions(position, Player.X);
-      // this.aiMakeMove();
+      let position = this.board.markCellPositionValue(col, row);
+      if (this.board.isCellTaken(position)) {
+        this.statusBar = `Position already taken. Try again`
+      } else {
+        this.statusBar = ``;
+        this.board.selectCell(position, Player.X);
+        this.selectCellAndUpdateWinningConditions(position, Player.X);
+        this.aiMakeMove();
+      }
     }
   }
 
@@ -105,7 +109,14 @@ export class BoardManagerService implements OnInit {
       let bestMovePosition = this.alphabeta
         .runAlgorithm(this.board, Player.O, this.referee.getAllWinningConditions());
       this.selectCellAndUpdateWinningConditions(bestMovePosition, Player.O)
-    }, 0);
+      if (this.gameMode == GameMode.AI_VS_AI) {
+        let coord = this.board.cellsCoordinates[bestMovePosition]
+        let coordArr = coord.split(",");
+        let row = coordArr[0];
+        let col = coordArr[1];
+        this.socketService.sendClaim(row, col);
+      }
+    }, 2500);
   }
 
 

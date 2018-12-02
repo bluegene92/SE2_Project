@@ -56,7 +56,7 @@ export class BoardComponent implements OnInit {
     console.log(this.cellsCoordinates)
   }
 
-  private markCellPositionValue(xCoord: number, yCoord: number): number {
+  markCellPositionValue(xCoord: number, yCoord: number): number {
 		return (yCoord * this.width) + xCoord;
   }
 

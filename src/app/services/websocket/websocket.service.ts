@@ -63,7 +63,7 @@ export class WebsocketService implements OnInit {
   onClaimPosition(): Observable<string> {
     return new Observable<string>(
       observer => {
-        this.socketToInternalServer.on('claim_pos_return', 
+        this.socketToInternalServer.on('claim_pos_return',
           (data: string) => observer.next(data))
       }
     )
@@ -79,7 +79,7 @@ export class WebsocketService implements OnInit {
 
   sendInitialization() {
     var initData = {
-      action: "init"
+      action: 'init'
     }
     this.socketToInternalServer.send(initData);
   }
@@ -87,7 +87,7 @@ export class WebsocketService implements OnInit {
   sendSetup(width: number, height: number, startingPlayer: string) {
     var player = (startingPlayer == Player.FIRST) ? 1 : 2
     var setupData = {
-      action: "setup",
+      action: 'setup',
       board: {
         colcount: width,
         rowcount: height
@@ -99,7 +99,7 @@ export class WebsocketService implements OnInit {
 
   sendClaim(row: number, col: number) {
     var claimData = {
-      action: "claim",
+      action: 'claim',
       row: row,
       col: col
     }
