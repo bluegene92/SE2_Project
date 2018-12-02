@@ -24,7 +24,7 @@ export class BoardComponent implements OnInit {
     = new EventEmitter<number>();
 
   private cells = Array(this.width * this.height).fill(null);
-  private cellsCoordinates = Array(this.width * this.height).fill(null);
+  cellsCoordinates = Array(this.width * this.height).fill(null);
 
   constructor() { }
 
@@ -49,10 +49,11 @@ export class BoardComponent implements OnInit {
 			for (let j = 0; j < this.width; j++) {
         this.widthArray[j] = j;
 				let v = this.markCellPositionValue(j, i);
-				this.cellsCoordinates[v] = `${i},${j}`;
+        this.cellsCoordinates[v] = `${i},${j}`;
         this.cells[v] = v.toString();
 			}
-		}
+    }
+    console.log(this.cellsCoordinates)
   }
 
   private markCellPositionValue(xCoord: number, yCoord: number): number {

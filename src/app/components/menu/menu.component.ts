@@ -29,7 +29,7 @@ export class MenuComponent implements OnInit {
 
   private ipAddress: string = 'localhost:5000';
   networkLog: string = '';
-  private gameModeSelected = GameMode.HUMAN_VS_AI;
+  gameModeSelected = GameMode.HUMAN_VS_AI;
   private startingPlayer: string = Player.FIRST;
 
   constructor(private boardManager: BoardManagerService,
@@ -47,6 +47,7 @@ export class MenuComponent implements OnInit {
   private initializeDefaultGameMenu() {
     this.boardManager.manage(this.board);
     this.boardManager.referenceTimer(this.timer);
+    this.boardManager.referenceMenu(this);
     this.boardAccessHandler.manage(this.board);
     this.boardConfigurator.manage(this.board);
   }
@@ -67,8 +68,9 @@ export class MenuComponent implements OnInit {
 
   private startGame() {
     this.boardAccessHandler.enable();
+    this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
     this.boardManager.startWithPlayer(this.startingPlayer);
-    this.boardManager.startTimer();
+    // this.boardManager.startTimer();
   }
 
   private newGame() {
@@ -76,14 +78,17 @@ export class MenuComponent implements OnInit {
     this.boardManager.resetGame();
     this.boardAccessHandler.reset();
     this.boardAccessHandler.disable();
+    this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
   }
 
   private selectedHVA() {
-    this.boardManager.setGameMode(new HumanVsAi(), this.startingPlayer);
+    this.gameModeSelected = GameMode.HUMAN_VS_AI;
+    console.log(this.gameModeSelected);
   }
 
   private selectedAVA() {
-    this.boardManager.setGameMode(new AiVsAi(), this.startingPlayer);
+    this.gameModeSelected = GameMode.AI_VS_AI;
+    console.log(this.gameModeSelected)
   }
 
   private goFirst() {
@@ -123,12 +128,26 @@ export class MenuComponent implements OnInit {
       console.log(`[claim return]: ${JSON.stringify(claimData)}`)
       var data = claimData["data"];
       var status = claimData["status"];
+      var row = data["row"];
+      var col = data["col"];
+
+      var opponentPosition = (row * this.boardWidth) + col;
+      // this.boardManager.opponentSelectPosition(opponentPosition)
+
       if (status == "ok")
         this.networkLog += `[claim]: claim sent successfully.\n`
       else
         this.networkLog += `[claim]: claim sent fail.\n`
     })
+
+  this.socketService.onClaimPosition()
+      .subscribe((claimPositionData) => {
+        console.log(`[claim position return]: ${JSON.stringify(claimPositionData)}`)
+
+
+      })
   }
+
 
   private connect() {
     this.socketService.sendInitialization()
@@ -139,7 +158,7 @@ export class MenuComponent implements OnInit {
   }
 
   sendClaim() {
-    this.socketService.sendClaim(6,6);
+    this.socketService.sendClaim(2,2);
   }
 
   private isWithinLimit(length: number) {

@@ -16,6 +16,7 @@ const INTERNAL_SERVER_URL = 'http://localhost:5000'
 export class WebsocketService implements OnInit {
   private socketToInternalServer = io(INTERNAL_SERVER_URL)
   private menu: MenuComponent
+
   constructor() { }
 
   ngOnInit(): void {}
@@ -54,6 +55,15 @@ export class WebsocketService implements OnInit {
     return new Observable<string>(
       observer => {
         this.socketToInternalServer.on('claim_return',
+          (data: string) => observer.next(data))
+      }
+    )
+  }
+
+  onClaimPosition(): Observable<string> {
+    return new Observable<string>(
+      observer => {
+        this.socketToInternalServer.on('claim_pos_return', 
           (data: string) => observer.next(data))
       }
     )
