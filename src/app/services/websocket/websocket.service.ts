@@ -105,6 +105,4 @@ export class WebsocketService implements OnInit {
     }
     this.socketToInternalServer.emit('claim', claimData);
   }
-
-
 }

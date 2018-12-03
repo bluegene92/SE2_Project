@@ -116,7 +116,7 @@ export class BoardManagerService implements OnInit {
         let col = coordArr[1];
         this.socketService.sendClaim(row, col);
       }
-    }, 2500);
+    }, 0);
   }
 
 
@@ -139,7 +139,6 @@ export class BoardManagerService implements OnInit {
   }
 
   resetGame() {
-    // this.timer.reset();
     this.statusBar = '';
   }
 
