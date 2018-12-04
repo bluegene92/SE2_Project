@@ -86,11 +86,13 @@ export class BoardManagerService implements OnInit {
     if (this.gameMode == GameMode.HUMAN_VS_AI) {
       this.board.selectCell(position, Player.X);
       this.selectCellAndUpdateWinningConditions(position, Player.X);
+      this.timer.restartCountDown();
       this.aiMakeMove();
     }
   }
 
   opponentSelectPosition(row: number, col: number) {
+    this.timer.restartCountDown();
     if (this.gameMode == GameMode.AI_VS_AI) {
       let position = this.board.markCellPositionValue(col, row);
       if (this.board.isCellTaken(position)) {
@@ -105,6 +107,7 @@ export class BoardManagerService implements OnInit {
   }
 
 	aiMakeMove(): any {
+    this.timer.restartCountDown();
     setTimeout(()=> {
       let bestMovePosition = this.alphabeta
         .runAlgorithm(this.board, Player.O, this.referee.getAllWinningConditions());
@@ -117,6 +120,7 @@ export class BoardManagerService implements OnInit {
         this.socketService.sendClaim(row, col);
       }
     }, 0);
+
   }
 
 
@@ -128,12 +132,14 @@ export class BoardManagerService implements OnInit {
 			this.winner = player;
       this.statusBar = `${this.winner} Win!!!`;
       this.board.disable()
+      this.timer.reset();
 		}
 
 		if (this.referee.isDraw()) {
 			this.winner = Result.DRAW;
       this.statusBar = `${Result.DRAW}`;
       this.board.disable()
+      this.timer.reset();
     }
     console.log(this.statusBar);
   }
@@ -145,5 +151,30 @@ export class BoardManagerService implements OnInit {
   playerGoAfter(player: string) {
     this.currentPlayerTurn = (player == Player.X) ? Player.O : Player.X;
     console.log(this.currentPlayerTurn);
+  }
+
+  identifyWinner() {
+    let xTally = 0;
+    let oTally = 0;
+    this.statusBar = 'Out of time: '
+
+    for (let c of this.board.cells) {
+      if (c == Player.X)
+        xTally++;
+
+      if (c == Player.O)
+        oTally++;
+    }
+
+    if (xTally > oTally)
+      this.statusBar += 'X WIN!';
+    else if (oTally > xTally)
+      this.statusBar += 'O WIN!';
+    else {
+      if (this.startingPlayer == Player.FIRST)
+        this.statusBar += 'O WIN!';
+      else
+        this.statusBar += 'X WIN!';
+    }
   }
 }

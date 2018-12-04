@@ -23,7 +23,7 @@ export class BoardComponent implements OnInit {
   @Output() notifyCellSelectedPosition: EventEmitter<number>
     = new EventEmitter<number>();
 
-  private cells = Array(this.width * this.height).fill(null);
+  cells = Array(this.width * this.height).fill(null);
   cellsCoordinates = Array(this.width * this.height).fill(null);
 
   constructor() { }

@@ -4,6 +4,26 @@
 }
 
 .input-field input[type="text"] {
+  border-radius: 5px;
   text-align: center;
-  width: 40px;
+  width: 60px;
+  height: 40px;
+  display: inline-block;
+}
+
+.valid,
+.invalid {
+  display: inline;
+}
+
+
+.valid input[type="text"] {
+  border: 5px solid #79BD8F;
+  background-color: #D9EBC2;
+}
+
+.invalid input[type="text"] {
+  border: 5px solid #A6141A;
+  background-color: #E51B24;
+  color: #fff;
 }

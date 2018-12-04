@@ -2,14 +2,20 @@
   font-family: 'Lato', sans-serif;
 }
 
+.menu .input-field {
+  margin: 1em 0;
+}
+
 .menu .input-field label {
   width: 100px;
 }
 
 .menu .input-field input[type="text"] {
   text-align: center;
-  width: 40px;
+  width: 60px;
+  height: 40px;
   display: inline-block;
+  border-radius: 5px;
 }
 
 .menu .board-size {
@@ -80,11 +86,14 @@
 
 
 .valid input[type="text"] {
-  border: 2px solid green;
+  border: 5px solid #79BD8F;
+  background-color: #D9EBC2;
 }
 
 .invalid input[type="text"] {
-  border: 2px solid red;
+  border: 5px solid #A6141A;
+  background-color: #E51B24;
+  color: #fff;
 }
 
 .not-allowed,

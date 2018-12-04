@@ -74,6 +74,7 @@ export class MenuComponent implements OnInit {
       this.boardAccessHandler.enable();
       this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
       this.boardManager.startWithPlayer(this.startingPlayer);
+      this.timer.start();
     }
   }
 
@@ -85,6 +86,7 @@ export class MenuComponent implements OnInit {
       this.boardAccessHandler.reset();
       this.boardAccessHandler.disable();
       this.boardManager.setGameMode(this.gameModeSelected, this.startingPlayer);
+      this.timer.reset();
     }
   }
 

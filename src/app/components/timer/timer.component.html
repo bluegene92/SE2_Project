@@ -2,11 +2,16 @@
     <h4>Timer</h4>
     <div class="input-field">
       <label for="thresholdTime">Threshold</label>
-      <input  type="text"
+
+      <div
+        [ngClass]="{'valid': isValidThresholdTime(thresholdTime), 'invalid': !isValidThresholdTime(thresholdTime)}">
+              <input  type="text"
               [(ngModel)]="thresholdTime"
               maxlength="2" size="1"
               placeholder="{{thresholdTime}}"
               (input)="onThresholdTimeChange($event.target.value)"/>
+      </div>
+
     </div>
 
     <div class="input-field">

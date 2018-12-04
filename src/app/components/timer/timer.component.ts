@@ -15,10 +15,10 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 })
 export class TimerComponent implements OnInit {
 
-  private timerObservable: Observable<number>;
+  private timerObservable: Observable<number> = timer(0, 1000);
   private timerSubscription: Subscription;
   private counter: number;
-  private thresholdTime: number = 20;
+  private thresholdTime: number = 30;
   private timeRemaining: number = this.thresholdTime;
   private boardManager: BoardManagerService;
 
@@ -26,7 +26,6 @@ export class TimerComponent implements OnInit {
   ngOnInit() {}
 
   start() {
-    this.timerObservable = timer(0, 1000);
     this.timerSubscription = this.timerObservable
       .subscribe(currentTick => {
         this.updateTick(currentTick);
@@ -55,8 +54,14 @@ export class TimerComponent implements OnInit {
     this.timeRemaining = this.thresholdTime - this.counter;
     if (this.isOutOfTime()) {
       this.reset();
-      // this.boardManager.identifyWinner()
+      this.boardManager.identifyWinner()
     }
+  }
+
+  restartCountDown() {
+    this.timeRemaining = this.thresholdTime;
+    this.reset();
+    this.start();
   }
 
   private isOutOfTime(): boolean {
@@ -69,6 +74,10 @@ export class TimerComponent implements OnInit {
 
   getTimeRemaining(): number {
     return this.timeRemaining;
+  }
+
+  isValidThresholdTime(time: number) {
+    return (time <= 60 && time > 5) ? true : false;
   }
 
   ngOnDestroy() {
