@@ -182,13 +182,23 @@ export class MenuComponent implements OnInit {
       })
   }
 
-
   private connect() {
     this.socketService.sendInitialization()
   }
 
   sendSetup() {
-    this.socketService.sendSetup(this.boardWidth, this.boardHeight, this.startingPlayer)
+    this.startGame();
+    if (this.gameModeSelected == GameMode.AI_VS_AI &&
+        this.startingPlayer == Player.FIRST) {
+      this.socketService.sendSetup(this.boardWidth, this.boardHeight, this.startingPlayer);
+    }
+
+    if (this.gameModeSelected == GameMode.AI_VS_AI &&
+        this.startingPlayer == Player.SECOND){
+      this.socketService.sendSetup(this.boardWidth, this.boardHeight, this.startingPlayer);
+      this.boardManager.aiMakeMove();
+    }
+
   }
 
   sendClaim() {

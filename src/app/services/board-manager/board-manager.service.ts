@@ -119,7 +119,7 @@ export class BoardManagerService implements OnInit {
         let col = coordArr[1];
         this.socketService.sendClaim(row, col);
       }
-    }, 0);
+    }, 1000);
 
   }
 
