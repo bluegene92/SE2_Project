@@ -117,7 +117,8 @@ export class BoardManagerService implements OnInit {
         let coordArr = coord.split(",");
         let row = coordArr[0];
         let col = coordArr[1];
-        this.socketService.sendClaim(row, col);
+        if (!this.referee.isDraw())
+          this.socketService.sendClaim(row, col);
       }
     }, 1000);
 
@@ -176,5 +177,6 @@ export class BoardManagerService implements OnInit {
       else
         this.statusBar += 'X WIN!';
     }
+    this.board.disable();
   }
 }
